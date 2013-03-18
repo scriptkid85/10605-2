@@ -1,0 +1,1 @@
+bash randomtrainset.bash /afs/cs.cmu.edu/project/bigML/dbpedia/abstract.train | java MemEffiSGD -n 1130442 -u 0.1 -N 100000 -test /afs/cs.cmu.edu/project/bigML/dbpedia/abstract.test > outputu01N1e5.txt
