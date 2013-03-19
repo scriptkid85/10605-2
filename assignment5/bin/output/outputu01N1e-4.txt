@@ -1,0 +1,16 @@
+
+For label: (nl), Percent correct: 200258/280985=71.2699966190366%
+For label: (el), Percent correct: 269864/280985=96.04213748064844%
+For label: (ru), Percent correct: 197337/280985=70.23043934729611%
+For label: (sl), Percent correct: 265791/280985=94.59259391070698%
+For label: (pl), Percent correct: 196521/280985=69.94003238607043%
+For label: (ca), Percent correct: 234193/280985=83.34715376265636%
+For label: (fr), Percent correct: 170818/280985=60.79256899834511%
+For label: (tr), Percent correct: 256868/280985=91.41697955406872%
+For label: (hu), Percent correct: 252362/280985=89.81333523141805%
+For label: (de), Percent correct: 178058/280985=63.36921899745538%
+For label: (es), Percent correct: 188106/280985=66.94521059843052%
+For label: (hr), Percent correct: 264575/280985=94.15983059593928%
+For label: (ga), Percent correct: 277939/280985=98.91595636777764%
+For label: (pt), Percent correct: 192329/280985=68.44813780095022%
+Average percent correct: 79.94882797505713%

@@ -1,0 +1,18 @@
+Parameters used:
+N: 100000, mu: 0.001, eta:0.5
+
+For label: (nl), Percent correct: 218579/280985=77.79027350214425%
+For label: (el), Percent correct: 273299/280985=97.26462266669039%
+For label: (ru), Percent correct: 214665/280985=76.39731658273573%
+For label: (sl), Percent correct: 269395/280985=95.87522465612042%
+For label: (pl), Percent correct: 212083/280985=75.4784063206221%
+For label: (ca), Percent correct: 245307/280985=87.30252504582096%
+For label: (fr), Percent correct: 192781/280985=68.60900048045269%
+For label: (tr), Percent correct: 263269/280985=93.69503710162465%
+For label: (hu), Percent correct: 257036/280985=91.47676922255637%
+For label: (de), Percent correct: 197552/280985=70.30695588732495%
+For label: (es), Percent correct: 210620/280985=74.95773795754221%
+For label: (hr), Percent correct: 268539/280985=95.57058205954054%
+For label: (ga), Percent correct: 278705/280985=99.18856878481058%
+For label: (pt), Percent correct: 213810/280985=76.0930298770397%
+Average percent correct: 84.28614643893039%

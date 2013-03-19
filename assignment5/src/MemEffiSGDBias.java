@@ -8,7 +8,7 @@ import java.util.Vector;
 
 import com.sun.org.apache.xpath.internal.operations.Equals;
 
-public class MemEffiSGD {
+public class MemEffiSGDBias {
 
   static long N = 100000;
 
@@ -37,6 +37,8 @@ public class MemEffiSGD {
 
   @SuppressWarnings("unchecked")
   static Hashtable<Long, Double>[] B = (Hashtable<Long, Double>[]) new Hashtable<?, ?>[labelsize];
+  
+  static double Bias[] = new double[labelsize];
 
   static Hashtable<String, Integer> labelspace = new Hashtable<String, Integer>();
 
@@ -49,6 +51,7 @@ public class MemEffiSGD {
         A[i].put(j, (long) 0);
       }
       B[i] = new Hashtable<Long, Double>();
+      Bias[i] = 0;
     }
     labelspace.put("nl", 0);
     labelspace.put("el", 1);
@@ -74,6 +77,10 @@ public class MemEffiSGD {
     }
   }
   
+  private static void outputPara(){
+    System.out.println("Parameters used:");
+    System.out.println("N: " + N + ", mu: " + mu + ", eta:" + eta);
+  }
   
   private static Vector<String> tokenizeDoc(String cur_doc) {
     String[] words = cur_doc.split("\\s+");
@@ -167,7 +174,7 @@ public class MemEffiSGD {
           int labelcode = labelspace.get(label);
           positive[labelcode] = 1;
           
-          double innerproduct = 0;
+          double innerproduct = Bias[labelcode];
           for(long code: V.keySet()){
             innerproduct += V.get(code) * B[labelcode].get(code);
           }
@@ -177,7 +184,7 @@ public class MemEffiSGD {
         
         for(int labelcode = 0; labelcode < labelsize; ++labelcode){
           if(positive[labelcode] == 1)continue;
-          double innerproduct = 0;
+          double innerproduct = Bias[labelcode];
           for(long code: V.keySet()){
             innerproduct += V.get(code) * B[labelcode].get(code);
           }
@@ -248,7 +255,7 @@ public class MemEffiSGD {
         int labelcode = labelspace.get(label);
         positive[labelcode] = 1;
 
-        double innerprod = 0;
+        double innerprod = Bias[labelcode];
         for (long code : V.keySet()) {
           double newvalue = 0;
           if (!B[labelcode].containsKey(code)) {
@@ -265,6 +272,9 @@ public class MemEffiSGD {
 
         double p = sigmoid(innerprod);
 
+        // update the bias
+        Bias[labelcode] *= (1 - 2 * lambda * mu);
+        Bias[labelcode] += (lambda * (1 - p));
         // update the weight
         for (long code : V.keySet()) {
           B[labelcode].put(code, B[labelcode].get(code) + (lambda * (1 - p) * V.get(code)));
@@ -274,7 +284,7 @@ public class MemEffiSGD {
       // deal with negative labels then
       for (int labelcode = 0; labelcode < labelsize; labelcode ++) {
         if(positive[labelcode] == 1)continue;
-        double innerprod = 0;
+        double innerprod = Bias[labelcode];
         for (long code : V.keySet()) {
           double newvalue = 0;
           if (!B[labelcode].containsKey(code)) {
@@ -291,6 +301,10 @@ public class MemEffiSGD {
 
         double p = sigmoid(innerprod);
 
+        // update the bias
+        // update the bias
+        Bias[labelcode] *= (1 - 2 * lambda * mu);
+        Bias[labelcode] += lambda * (-p);
         // update the weight
         for (long code : V.keySet()) {
           B[labelcode].put(code, B[labelcode].get(code) + (lambda * -p * V.get(code)));
@@ -353,7 +367,7 @@ public class MemEffiSGD {
           int labelcode = labelspace.get(label);
           positive[labelcode] = 1;
           
-          double innerproduct = 0;
+          double innerproduct = Bias[labelcode];
           for(long code: V.keySet()){
             if(!B[labelcode].containsKey(code))continue;
             innerproduct += V.get(code) * B[labelcode].get(code);
@@ -365,7 +379,7 @@ public class MemEffiSGD {
         }
        for (int labelcode = 0; labelcode < labelsize; ++labelcode){
          if(positive[labelcode] == 1)continue;
-         double innerproduct = 0;
+         double innerproduct = Bias[labelcode];
          for(long code: V.keySet()){
            if(!B[labelcode].containsKey(code))continue;
            innerproduct += V.get(code) * B[labelcode].get(code);
@@ -414,7 +428,9 @@ public class MemEffiSGD {
       System.out.println("The -train argument only needed when you want to output the overall likelihood function for each iteration");
       System.exit(0);
     }
+    
     Init();
+    outputPara();
     updateWeight();
     //outputWeight();
     test();
