@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.Vector;
 
-public class MemEffiSGD {
+import com.sun.org.apache.xpath.internal.operations.Equals;
+
+public class MemEffiSGDwoBias {
 
   static long N = 100000;
 
@@ -35,8 +37,6 @@ public class MemEffiSGD {
 
   @SuppressWarnings("unchecked")
   static Hashtable<Long, Double>[] B = (Hashtable<Long, Double>[]) new Hashtable<?, ?>[labelsize];
-  
-  static double Bias[] = new double[labelsize];
 
   static Hashtable<String, Integer> labelspace = new Hashtable<String, Integer>();
 
@@ -49,7 +49,6 @@ public class MemEffiSGD {
         A[i].put(j, (long) 0);
       }
       B[i] = new Hashtable<Long, Double>();
-      Bias[i] = 0;
     }
     labelspace.put("nl", 0);
     labelspace.put("el", 1);
@@ -67,7 +66,6 @@ public class MemEffiSGD {
     labelspace.put("pt", 13);
   }
 
-  //used for debuging: output current weights
   private static void outputWeight(){
     for(int i = 0; i < labelsize; ++i){
       for(long code: B[i].keySet()){
@@ -76,11 +74,6 @@ public class MemEffiSGD {
     }
   }
   
-  //used for debuging: output current parameters
-  private static void outputPara(){
-    System.out.println("Parameters used:");
-    System.out.println("N: " + N + ", mu: " + mu + ", eta:" + eta);
-  }
   
   private static Vector<String> tokenizeDoc(String cur_doc) {
     String[] words = cur_doc.split("\\s+");
@@ -174,7 +167,7 @@ public class MemEffiSGD {
           int labelcode = labelspace.get(label);
           positive[labelcode] = 1;
           
-          double innerproduct = Bias[labelcode];
+          double innerproduct = 0;
           for(long code: V.keySet()){
             innerproduct += V.get(code) * B[labelcode].get(code);
           }
@@ -184,7 +177,7 @@ public class MemEffiSGD {
         
         for(int labelcode = 0; labelcode < labelsize; ++labelcode){
           if(positive[labelcode] == 1)continue;
-          double innerproduct = Bias[labelcode];
+          double innerproduct = 0;
           for(long code: V.keySet()){
             innerproduct += V.get(code) * B[labelcode].get(code);
           }
@@ -255,7 +248,7 @@ public class MemEffiSGD {
         int labelcode = labelspace.get(label);
         positive[labelcode] = 1;
 
-        double innerprod = Bias[labelcode];
+        double innerprod = 0;
         for (long code : V.keySet()) {
           double newvalue = 0;
           if (!B[labelcode].containsKey(code)) {
@@ -272,9 +265,6 @@ public class MemEffiSGD {
 
         double p = sigmoid(innerprod);
 
-        // update the bias
-        Bias[labelcode] *= (1 - 2 * lambda * mu);
-        Bias[labelcode] += (lambda * (1 - p));
         // update the weight
         for (long code : V.keySet()) {
           B[labelcode].put(code, B[labelcode].get(code) + (lambda * (1 - p) * V.get(code)));
@@ -284,7 +274,7 @@ public class MemEffiSGD {
       // deal with negative labels then
       for (int labelcode = 0; labelcode < labelsize; labelcode ++) {
         if(positive[labelcode] == 1)continue;
-        double innerprod = Bias[labelcode];
+        double innerprod = 0;
         for (long code : V.keySet()) {
           double newvalue = 0;
           if (!B[labelcode].containsKey(code)) {
@@ -301,10 +291,6 @@ public class MemEffiSGD {
 
         double p = sigmoid(innerprod);
 
-        // update the bias
-        // update the bias
-        Bias[labelcode] *= (1 - 2 * lambda * mu);
-        Bias[labelcode] += lambda * (-p);
         // update the weight
         for (long code : V.keySet()) {
           B[labelcode].put(code, B[labelcode].get(code) + (lambda * -p * V.get(code)));
@@ -346,7 +332,7 @@ public class MemEffiSGD {
         content = s.substring(splitposition + 1, s.length());
         labeltokens = labels.split(",");
         contenttokens = tokenizeDoc(content);
-        System.out.print("[" + labels + "]");
+        
         V.clear();
         for (String token : contenttokens) {
           long Code = hashcode(token);
@@ -367,7 +353,7 @@ public class MemEffiSGD {
           int labelcode = labelspace.get(label);
           positive[labelcode] = 1;
           
-          double innerproduct = Bias[labelcode];
+          double innerproduct = 0;
           for(long code: V.keySet()){
             if(!B[labelcode].containsKey(code))continue;
             innerproduct += V.get(code) * B[labelcode].get(code);
@@ -376,31 +362,28 @@ public class MemEffiSGD {
           if(p >= 0.5) {
             ++correct[labelcode];
           }
-          System.out.print("\t" + label + "\t" + String.format("%.3f", p));
         }
        for (int labelcode = 0; labelcode < labelsize; ++labelcode){
          if(positive[labelcode] == 1)continue;
-         double innerproduct = Bias[labelcode];
+         double innerproduct = 0;
          for(long code: V.keySet()){
            if(!B[labelcode].containsKey(code))continue;
            innerproduct += V.get(code) * B[labelcode].get(code);
          }
          double p = sigmoid(innerproduct);
          if(p < 0.5) ++correct[labelcode];
-         System.out.print("\t" + wholelabels[labelcode] + "\t" + String.format("%.3f", p));
-       }
-       System.out.print("\n");
+       }           
       }
       System.out.print("\n");
       double avg = 0;
       for(String label: labelspace.keySet()){
         
         long thiscorrect = correct[labelspace.get(label)];
-        System.out.println("For label: " + "(" + label + ")" + ", Percent correct: " + thiscorrect + "/" + total + "=" + String.format("%.3f", (thiscorrect / (double)total * 100)) + "%");
+        System.out.println("For label: " + "(" + label + ")" + ", Percent correct: " + thiscorrect + "/" + total + "=" + (thiscorrect / (double)total * 100) + "%");
         avg += thiscorrect / (double)total / labelsize;
       }
       
-      System.out.println("Average percent correct: " + String.format("%.3f", avg * 100) + "%");
+      System.out.println("Average percent correct: " + avg * 100 + "%");
       
     }
     catch(Exception e) {// Catch exception if any
@@ -431,9 +414,7 @@ public class MemEffiSGD {
       System.out.println("The -train argument only needed when you want to output the overall likelihood function for each iteration");
       System.exit(0);
     }
-    
     Init();
-    //outputPara();
     updateWeight();
     //outputWeight();
     test();

@@ -1,0 +1,30 @@
+[pt,tr,hu,es,ru,pl,ca,nl,sl,fr,ga,de,hr,el]	sl hr ca tr hu ga de el pt pl fr ru es nl 
+[es,ru,ca,fr,de,el]	ca de el fr ru es 
+[pt,es,ru,pl,fr,de]	de pl pt fr ru es 
+[pt,es,ru,fr,de]	de pt fr ru es 
+[es,pl,fr,de]	de pl fr es 
+[pl,ca,de]	ca de pl 
+[pt,de]	de pt 
+[pt,es,pl,fr,de]	de pl pt fr es 
+[es,ru,de]	de ru es 
+[fr,de]	de fr 
+[nl]	nl 
+[fr,ga]	ga fr 
+[hu]	hu 
+[fr]	fr 
+[fr,de]	de fr 
+[pt,es,pl,ca,nl,fr]	ca pl pt fr es nl 
+[el]	el 
+[de]	de 
+[fr]	fr 
+[pt,fr]	pt fr 
+[pl]	pl 
+[ru,pl,de]	de pl ru 
+[fr]	fr 
+[pt,fr]	pt fr 
+[sl,fr,de]	sl de fr 
+[nl]	nl 
+[ru,pl]	pl ru 
+[pt,tr,es,ru,pl,ca,nl,fr,de,el]	ca tr de el pl pt fr ru es nl 
+[pt,es,ru,nl,fr,de]	de pt fr ru es nl 
+

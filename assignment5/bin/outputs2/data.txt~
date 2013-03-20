@@ -1,0 +1,19 @@
+
+N: 10, mu: 1.0E-5, eta:0.5
+Average percent correct: 73.689%
+
+N: 100, mu: 1.0E-5, eta:0.5
+Average percent correct: 78.824%
+
+N: 1000, mu: 1.0E-5, eta:0.5
+Average percent correct: 81.613%
+
+N: 10000, mu: 1.0E-5, eta:0.5
+Average percent correct: 84.365%
+
+N: 100000, mu: 1.0E-5, eta:0.5
+Average percent correct: 85.784%
+
+N: 1000000, mu: 1.0E-5, eta:0.5
+Average percent correct: 86.074%
+
